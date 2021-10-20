@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>home</title>
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta2/css/all.min.css"
+      integrity="sha512-YWzhKL2whUzgiheMoBFwW8CKV4qpHQAEuvilg9FAn5VJUDwKZZxkJNuGM4XkWuk94WCrrwslk8yWNGmY1EduTA=="
+      crossorigin="anonymous"
+      referrerpolicy="no-referrer"
+    />
+    <style>
+      * {
+        background-color: #333;
+        color: white;
+      }
+      h2 {
+        text-align: center;
+      }
+      section {
+        display: flex;
+        align-items: center;
+        justify-content: space-around;
+      }
+      section i {
+        cursor: pointer;
+        font-size: 30px;
+        transition: all 0.5s;
+      }
+      section i:hover {
+        color: blueviolet;
+        font-size: 35px;
+      }
+      img {
+        width: 60vw;
+      }
+    </style>
+  </head>
+  <body>
+    <div id="app">
+      <h2>Author: {{ current.author }}</h2>
+      <section class="slider">
+        <i @click="go(-1)" class="fas fa-chevron-left"></i>
+        <img :src="current.download_url" :alt="current.author" />
+        <i @click="go()" class="fas fa-chevron-right"></i>
+      </section>
+      <h3>Photo {{ idx+1 }} de {{ images.length }}</h3>
+    </div>
+    <script src="https://unpkg.com/vue@next"></script>
+    <script>
+      const App = Vue.createApp({
+        methods: {
+          go(to = 1) {
+            this.idx += to;
+            this.idx =
+              this.idx > this.images.length - 1
+                ? 0
+                : this.idx < 0
+                ? this.images.length - 1
+                : this.idx;
+            this.current = this.images[this.idx];
+          },
+        },
+        data() {
+          return {
+            idx: 0,
+            current: "",
+            title: "Roberto Castillo",
+            images: [],
+          };
+        },
+        async mounted() {
+          const res = await fetch("https://picsum.photos/v2/list");
+          this.images = await res.json();
+          console.log(this.images[this.idx]);
+          this.current = this.images[this.idx];
+        },
+      });
+
+      App.mount("#app");
+    </script>
+  </body>
+</html>
